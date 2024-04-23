@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:deduct_ai/model/section.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:deduct_ai/app_constants/app_colors.dart';
@@ -43,11 +44,11 @@ class _ChargeScreenState extends State<ChargeScreen> {
   final List<File> _proofs = []; // Store selected proofs
   Future<void> getSections() async {
     print(widget.id);
-    String apiUrl = 'http://13.49.30.1:3000/api/sections/${widget.id}/';
+    String apiUrl = 'http://192.168.134.120:8000/api/sections/${widget.id}/';
 
     try {
       setState(() {
-        _isloading = false;
+        _isloading = true;
       });
       var requestBody = jsonEncode({
         'notes': widget.caseNote,
@@ -135,6 +136,13 @@ class _ChargeScreenState extends State<ChargeScreen> {
       });
     }
 
+    _launchURL() async {
+      final Uri url = Uri.parse('https://shorturl.at/yNOT4');
+      if (!await launchUrl(url)) {
+        throw Exception('Could not launch $url');
+      }
+    }
+
     final provideCase = Provider.of<CaseProvider>(context, listen: false);
     void _saveCase() {
       Case newCase = Case(
@@ -144,7 +152,7 @@ class _ChargeScreenState extends State<ChargeScreen> {
         caseNote: widget.caseNote.toString(),
         charges: _chargesList,
         suspects: List<String>.from(
-          _suspect!.split(','),
+          _suspect!.split(', '),
         ),
         paths: _proofs.map((proof) => proof.path).toList(),
       );
@@ -520,6 +528,8 @@ class _ChargeScreenState extends State<ChargeScreen> {
                             onPressed: () {
                               if (_selectedCharges.isEmpty) {
                                 return;
+                              } else {
+                                _launchURL();
                               }
                             },
                             child: Text(

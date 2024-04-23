@@ -74,7 +74,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.popUntil(context, (route) => route.isFirst);
                 },
                 child: const Text("Close"),
               ),

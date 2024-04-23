@@ -34,7 +34,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<List<String>?> analyzeVideoAndString(
       File videoFile, String inputString) async {
-    String apiUrl = 'http://13.49.30.1:3000/api/create_case/';
+    String apiUrl = 'http://192.168.134.120:8000/api/create_case/';
 
     try {
       setState(() {
@@ -95,6 +95,9 @@ class _CameraScreenState extends State<CameraScreen> {
           return objects;
         }).then((_) {
           _videoFile = File(value.path);
+          setState(() {
+            _isloading = false;
+          });
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => ObjectScreen(
@@ -143,21 +146,22 @@ class _CameraScreenState extends State<CameraScreen> {
       body: _isloading
           ? Center(
               child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Analysing...',
-                      style: GoogleFonts.firaSans(
-                        fontSize: deviceWidth * 0.06,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.appTheme[100],
-                      ),
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Analysing...',
+                    style: GoogleFonts.firaSans(
+                      fontSize: deviceWidth * 0.06,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.appTheme[100],
                     ),
-                    SizedBox(height: deviceHeight * 0.02),
-                    CircularProgressIndicator(
-                      color: AppColors.appTheme[50],
-                    ),
-                  ]),
+                  ),
+                  SizedBox(height: deviceHeight * 0.02),
+                  CircularProgressIndicator(
+                    color: AppColors.appTheme[50],
+                  ),
+                ],
+              ),
             )
           : Column(
               children: [

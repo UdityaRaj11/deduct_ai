@@ -25,7 +25,7 @@ class _ProtocolScreenState extends State<ProtocolScreen> {
   bool _isloading = false;
   Future<void> getDetails() async {
     print(widget.id);
-    String apiUrl = 'http://13.49.30.1:3000/api/evidences/${widget.id}/';
+    String apiUrl = 'http://192.168.134.120:8000/api/evidences/${widget.id}/';
 
     try {
       setState(() {
@@ -49,7 +49,7 @@ class _ProtocolScreenState extends State<ProtocolScreen> {
 
         final Map<String, dynamic> responseMap = json.decode(response.body);
 
-        final List<dynamic> evidenceList = responseMap['evdience_detail_list'];
+        final List<dynamic> evidenceList = responseMap['evidence_detail_list'];
 
         for (final evidenceMap in evidenceList) {
           final evidenceDetail = Details.fromJson(evidenceMap);
@@ -194,166 +194,186 @@ class _ProtocolScreenState extends State<ProtocolScreen> {
         backgroundColor: AppColors.appTheme[800],
       ),
       backgroundColor: AppColors.appTheme[800],
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: deviceHeight * 0.02,
-                  horizontal: deviceWidth * 0.05,
-                ),
-                child: Text(
-                  "Protocol Guidlines",
-                  style: GoogleFonts.firaSans(
-                    fontSize: deviceWidth * 0.06,
-                    color: AppColors.appTheme[50],
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(
-                    vertical: deviceHeight * 0.01,
-                    horizontal: deviceWidth * 0.05,
-                  ),
-                ),
-                onPressed: () {
-                  _showPopup(context, null);
-                },
-                child: Text(
-                  '+ Note',
-                  style: GoogleFonts.firaSans(
-                    fontSize: deviceWidth * 0.04,
-                    color: AppColors.appTheme[50],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: deviceWidth * 0.05,
-            ),
-            child: Text(
-              "Tap on the proofs to check the guidelines",
-              style: GoogleFonts.firaSans(
-                fontSize: deviceWidth * 0.04,
-                color: AppColors.appTheme[100],
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: deviceHeight * 0.05,
-          ),
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: deviceWidth * 0.05,
-              ),
-              color: AppColors.appTheme[800],
-              child: GridView.builder(
-                  itemCount: widget.proofs!.length,
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: deviceWidth * 0.5,
-                      childAspectRatio: 3 / 2,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20),
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        _showPopup(context, widget.proofs![index]['name']);
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        decoration: BoxDecoration(
-                          color: AppColors.appTheme[600],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: deviceWidth * 0.02,
-                          vertical: deviceHeight * 0.01,
-                        ),
-                        child: Center(
-                          child: Column(
-                            children: [
-                              Icon(
-                                widget.proofs![index]['icon'],
-                                size: deviceWidth * 0.15,
-                                color: AppColors.appTheme[50],
-                              ),
-                              Text(
-                                widget.proofs![index]['name'],
-                                style: GoogleFonts.firaSans(
-                                  fontSize: deviceWidth * 0.05,
-                                  color: AppColors.appTheme[50],
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
+      body: _isloading
+          ? Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Fetching...',
+                      style: GoogleFonts.firaSans(
+                        fontSize: deviceWidth * 0.06,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.appTheme[100],
+                      ),
+                    ),
+                    SizedBox(height: deviceHeight * 0.02),
+                    CircularProgressIndicator(
+                      color: AppColors.appTheme[50],
+                    ),
+                  ]),
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: deviceHeight * 0.02,
+                        horizontal: deviceWidth * 0.05,
+                      ),
+                      child: Text(
+                        "Protocol Guidelines",
+                        style: GoogleFonts.firaSans(
+                          fontSize: deviceWidth * 0.06,
+                          color: AppColors.appTheme[50],
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                    );
-                  }),
-            ),
-          ),
-          Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  color: AppColors.appTheme[500],
-                  onPressed: () {
-                    Navigator.popUntil(context, (route) => route.isFirst);
-                  },
-                  icon: Icon(
-                    Icons.home_rounded,
-                    size: deviceWidth * 0.1,
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        padding: EdgeInsets.symmetric(
+                          vertical: deviceHeight * 0.01,
+                          horizontal: deviceWidth * 0.05,
+                        ),
+                      ),
+                      onPressed: () {
+                        _showPopup(context, null);
+                      },
+                      child: Text(
+                        '+ Note',
+                        style: GoogleFonts.firaSans(
+                          fontSize: deviceWidth * 0.04,
+                          color: AppColors.appTheme[50],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: deviceWidth * 0.05,
+                  ),
+                  child: Text(
+                    "Tap on the proofs to check the guidelines",
+                    style: GoogleFonts.firaSans(
+                      fontSize: deviceWidth * 0.04,
+                      color: AppColors.appTheme[100],
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 SizedBox(
-                  width: deviceWidth * 0.05,
+                  height: deviceHeight * 0.05,
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                Expanded(
+                  child: Container(
                     padding: EdgeInsets.symmetric(
-                      vertical: deviceHeight * 0.01,
-                      horizontal: deviceWidth * 0.25,
+                      horizontal: deviceWidth * 0.05,
                     ),
+                    color: AppColors.appTheme[800],
+                    child: GridView.builder(
+                        itemCount: widget.proofs!.length,
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: deviceWidth * 0.5,
+                            childAspectRatio: 3 / 2,
+                            crossAxisSpacing: 20,
+                            mainAxisSpacing: 20),
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              _showPopup(
+                                  context, widget.proofs![index]['name']);
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              height: double.infinity,
+                              decoration: BoxDecoration(
+                                color: AppColors.appTheme[600],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: deviceWidth * 0.02,
+                                vertical: deviceHeight * 0.01,
+                              ),
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      widget.proofs![index]['icon'],
+                                      size: deviceWidth * 0.15,
+                                      color: AppColors.appTheme[50],
+                                    ),
+                                    Text(
+                                      widget.proofs![index]['name'],
+                                      style: GoogleFonts.firaSans(
+                                        fontSize: deviceWidth * 0.05,
+                                        color: AppColors.appTheme[50],
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
                   ),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => ChargeScreen(
-                            id: widget.id!,
-                            caseName: widget.caseName!,
-                            proofs: widget.proofs!,
-                            caseNote: caseNote),
+                ),
+                Center(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        color: AppColors.appTheme[500],
+                        onPressed: () {
+                          Navigator.popUntil(context, (route) => route.isFirst);
+                        },
+                        icon: Icon(
+                          Icons.home_rounded,
+                          size: deviceWidth * 0.1,
+                        ),
                       ),
-                    );
-                  },
-                  child: Text(
-                    'Proceed',
-                    style: GoogleFonts.firaSans(
-                      fontSize: deviceWidth * 0.05,
-                      color: AppColors.appTheme[50],
-                      fontWeight: FontWeight.w500,
-                    ),
+                      SizedBox(
+                        width: deviceWidth * 0.05,
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          padding: EdgeInsets.symmetric(
+                            vertical: deviceHeight * 0.01,
+                            horizontal: deviceWidth * 0.25,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ChargeScreen(
+                                  id: widget.id!,
+                                  caseName: widget.caseName!,
+                                  proofs: widget.proofs!,
+                                  caseNote: caseNote),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Proceed',
+                          style: GoogleFonts.firaSans(
+                            fontSize: deviceWidth * 0.05,
+                            color: AppColors.appTheme[50],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }
